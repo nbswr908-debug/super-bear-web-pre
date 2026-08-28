@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SUPER BEAR Web Pre v1.28</title>
+<title>SUPER BEAR Web Pre v1.29</title>
 <style>
 :root {
   --bg:#151a22; --panel:#222a36; --panel2:#2a3442; --text:#eef3f7;
@@ -1219,6 +1219,31 @@ button:disabled { opacity:.38; cursor:not-allowed; filter:none!important; }
   .mobile-orientation-hint{display:none!important;}
 }
 
+
+/* ===== v1.29 mobile card / item full-image fix ===== */
+/* Hi-res card source ratio: 660 x 1010. Never crop card tops/bottoms. */
+.card-btn{aspect-ratio:660 / 1010;}
+.card-thumb{
+  width:100%!important;height:100%!important;max-height:none!important;
+  object-fit:contain!important;object-position:center center!important;
+  background:#111923;
+}
+.inv-card{aspect-ratio:660 / 1010;}
+.inv-card img{
+  width:100%!important;height:100%!important;max-height:none!important;
+  object-fit:contain!important;object-position:center center!important;
+  background:#201d12;
+}
+@media (max-width:900px){
+  .card-btn{min-height:0!important;aspect-ratio:660 / 1010!important;padding:0!important;}
+  .card-thumb{height:100%!important;max-height:none!important;object-fit:contain!important;}
+  .inv-card{aspect-ratio:660 / 1010!important;}
+  .inv-card img{height:100%!important;max-height:none!important;object-fit:contain!important;}
+}
+@media (max-width:520px){
+  /* Two columns make the full card art and text readable on phones. */
+  .card-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+}
 </style>
 <meta name="theme-color" content="#222a36">
 <meta name="theme-color" content="#222a36">
@@ -1347,7 +1372,7 @@ button:disabled { opacity:.38; cursor:not-allowed; filter:none!important; }
 <div id="app">
   <div class="header">
     <div>
-      <div class="title">🐻 SUPER BEAR <span style="font-size:13px;color:#f2c84b">Web Pre v1.28</span></div>
+      <div class="title">🐻 SUPER BEAR <span style="font-size:13px;color:#f2c84b">Web Pre v1.29</span></div>
       <div class="subtitle">URL配布用プレ版 / PC・スマホ・タブレット対応</div>
     </div>
     <div class="stats">
