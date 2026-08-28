@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SUPER BEAR Web Pre v1.23</title>
+<title>SUPER BEAR Web Pre v1.24</title>
 <style>
 :root {
   --bg:#151a22; --panel:#222a36; --panel2:#2a3442; --text:#eef3f7;
@@ -1056,6 +1056,57 @@ button:disabled { opacity:.38; cursor:not-allowed; filter:none!important; }
   .deck-stat small{font-size:8px;}
 }
 
+
+/* ===== v1.24 settings + Bear HP follower ===== */
+.settings-overlay{
+  position:fixed;inset:0;z-index:112;display:none;align-items:center;justify-content:center;
+  padding:max(10px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left));
+  background:rgba(5,9,14,.92);
+}
+.settings-overlay.show{display:flex;}
+.settings-card{
+  width:min(720px,96vw);max-height:92dvh;overflow:auto;-webkit-overflow-scrolling:touch;
+  background:#222c39;border:1px solid #5a697c;border-radius:18px;padding:22px;color:#eef3f7;
+  box-shadow:0 24px 80px #000b;
+}
+.settings-card h2{margin:0 0 5px;font-size:28px;}
+.settings-lead{margin:0 0 15px;color:#aebdcb;font-size:12px;}
+.settings-section{padding:15px 0;border-top:1px solid #445266;}
+.settings-section h3{margin:0 0 10px;color:#f2c84b;font-size:16px;}
+.settings-range{display:grid;grid-template-columns:80px 1fr;align-items:center;gap:10px;margin:9px 0;font-weight:800;}
+.settings-range input{width:100%;}
+.settings-options{display:flex;gap:10px;flex-wrap:wrap;}
+.settings-options.vertical{flex-direction:column;gap:8px;}
+.settings-options label{background:#2c394a;border:1px solid #53657a;border-radius:10px;padding:9px 12px;cursor:pointer;font-size:13px;font-weight:800;}
+.settings-note{font-size:11px;line-height:1.5;color:#aebdcb;margin-top:8px;}
+.settings-close{position:sticky;bottom:0;background:#222c39;padding-top:10px;margin-top:4px;}
+
+/* Original mode means the unaltered board art. Token contrast remains independent. */
+.board::before{display:none!important;}
+
+.bear-status{
+  position:relative;display:inline-flex;align-items:center;justify-content:center;z-index:7;
+}
+.bear-hearts{
+  position:absolute;left:50%;bottom:calc(100% + 1px);transform:translateX(-50%);
+  display:flex;align-items:center;justify-content:center;gap:0;white-space:nowrap;
+  padding:1px 3px;border-radius:999px;background:rgba(13,20,29,.88);
+  border:1px solid rgba(255,255,255,.92);box-shadow:0 1px 5px rgba(0,0,0,.72);
+  color:#ff445c;font-size:9px;line-height:1;letter-spacing:-1px;pointer-events:none;
+}
+.bear-hearts.zero{color:#aab3bd;}
+.authority-card-toast.manual{pointer-events:auto;}
+.authority-card-toast-close{
+  display:none;margin-top:12px;border:1px solid #70849a;border-radius:9px;padding:8px 14px;
+  background:#314054;color:#fff;font-weight:900;cursor:pointer;
+}
+.authority-card-toast.manual .authority-card-toast-close{display:inline-block;}
+@media(max-width:900px){
+  .settings-card{padding:17px 14px;}
+  .settings-options label{font-size:12px;padding:8px 10px;}
+  .bear-hearts{font-size:8px;padding:1px 2px;}
+}
+
 </style>
 <meta name="theme-color" content="#222a36">
 <meta name="theme-color" content="#222a36">
@@ -1070,8 +1121,53 @@ button:disabled { opacity:.38; cursor:not-allowed; filter:none!important; }
     <div class="title-menu-buttons">
       <button class="title-start" type="button" onclick="enterFromTitle()">GAME START</button>
       <button class="title-secondary" type="button" onclick="showHowToPlay()">あそびかた</button>
+      <button class="title-secondary" type="button" onclick="showSettings()">せってい</button>
     </div>
     <div class="title-audio-note">STARTを押すとBGM・SEが有効になります（オフライン動作）。</div>
+  </div>
+</div>
+
+<div id="settingsOverlay" class="settings-overlay" aria-hidden="true">
+  <div class="settings-card">
+    <h2>⚙️ せってい</h2>
+    <p class="settings-lead">設定は自動的に保存され、次回起動時にも引き継がれます。</p>
+
+    <div class="settings-section">
+      <h3>1．音量</h3>
+      <label class="settings-range">BGM <input id="settingsBgmVolume" type="range" min="0" max="1" step="0.05" value="0.34" oninput="setBgmVolume(this.value);syncSettingsControls()"></label>
+      <label class="settings-range">効果音 <input id="settingsSeVolume" type="range" min="0" max="1" step="0.05" value="0.72" oninput="setSeVolume(this.value);syncSettingsControls()"></label>
+    </div>
+
+    <div class="settings-section">
+      <h3>2．盤面表示</h3>
+      <div class="settings-options">
+        <label><input type="radio" name="settingsBoardMode" value="board" onchange="setBoardMode(this.value)"> オリジナル</label>
+        <label><input type="radio" name="settingsBoardMode" value="effects" onchange="setBoardMode(this.value)"> 効果のみ</label>
+      </div>
+      <div class="settings-note">「効果のみ」では、体力±・1回休み・アイテム獲得などゲームに必要な情報だけを表示します。</div>
+    </div>
+
+    <div class="settings-section">
+      <h3>3．カードと効果の表示時間</h3>
+      <div class="settings-options vertical">
+        <label><input type="radio" name="cardDisplayMode" value="off" onchange="setCardDisplayMode(this.value)"> 表示しない</label>
+        <label><input type="radio" name="cardDisplayMode" value="1s" onchange="setCardDisplayMode(this.value)"> 1秒</label>
+        <label><input type="radio" name="cardDisplayMode" value="2s" onchange="setCardDisplayMode(this.value)"> 2秒</label>
+        <label><input type="radio" name="cardDisplayMode" value="manual" onchange="setCardDisplayMode(this.value)"> 手動で非表示</label>
+      </div>
+      <div class="settings-note">ベアー側でプレイ中、CPU当局が使用したカードと効果の表示に適用されます。</div>
+    </div>
+
+    <div class="settings-section">
+      <h3>4．演出速度</h3>
+      <div class="settings-options">
+        <label><input type="radio" name="animationSpeed" value="slow" onchange="setAnimationSpeed(this.value)"> ゆっくり</label>
+        <label><input type="radio" name="animationSpeed" value="normal" onchange="setAnimationSpeed(this.value)"> 標準</label>
+        <label><input type="radio" name="animationSpeed" value="fast" onchange="setAnimationSpeed(this.value)"> はやい</label>
+      </div>
+    </div>
+
+    <div class="settings-close"><button class="big-button primary" type="button" onclick="hideSettings()">タイトルへ戻る</button></div>
   </div>
 </div>
 
@@ -1119,7 +1215,7 @@ button:disabled { opacity:.38; cursor:not-allowed; filter:none!important; }
       <li>当局側の設置物は、ベアーの現在地とそこから通常1歩で進めるマスには置けません。START・GOALにも設置できません。</li>
     </ul>
     <h3>盤面表示</h3>
-    <p>ゲーム中の「盤面表示」から、実物ボード（見やすさ補正）と「マスの効果だけ」をいつでも切り替えられます。ゲーム内容や判定は変わりません。</p>
+    <p>ゲーム中の「盤面表示」から、オリジナルと「効果のみ」をいつでも切り替えられます。ゲーム内容や判定は変わりません。</p>
     <div class="rules-close"><button class="big-button primary" type="button" onclick="hideHowToPlay()">タイトルへ戻る</button></div>
   </div>
 </div>
@@ -1131,6 +1227,7 @@ button:disabled { opacity:.38; cursor:not-allowed; filter:none!important; }
       <div class="authority-card-toast-kicker">スーパー当局がカードを使用</div>
       <div id="authorityCardToastName" class="authority-card-toast-name"></div>
       <div id="authorityCardToastEffect" class="authority-card-toast-effect"></div>
+      <button id="authorityCardToastClose" class="authority-card-toast-close" type="button" onclick="closeAuthorityCardPresentation()">閉じる</button>
     </div>
   </div>
 </div>
@@ -1138,7 +1235,7 @@ button:disabled { opacity:.38; cursor:not-allowed; filter:none!important; }
 <div id="app">
   <div class="header">
     <div>
-      <div class="title">🐻 SUPER BEAR <span style="font-size:13px;color:#f2c84b">Web Pre v1.23</span></div>
+      <div class="title">🐻 SUPER BEAR <span style="font-size:13px;color:#f2c84b">Web Pre v1.24</span></div>
       <div class="subtitle">URL配布用プレ版 / PC・スマホ・タブレット対応</div>
     </div>
     <div class="stats">
@@ -1157,8 +1254,8 @@ button:disabled { opacity:.38; cursor:not-allowed; filter:none!important; }
       <div class="display-controls">
         <label>盤面表示
           <select id="boardModeSelect" onchange="setBoardMode(this.value)">
-            <option value="board">実物ボード（見やすさ補正）</option>
-            <option value="effects">マスの効果だけ</option>
+            <option value="board">オリジナル</option>
+            <option value="effects">効果のみ</option>
           </select>
         </label>
       </div>
@@ -1429,38 +1526,71 @@ function syncAudioControls() {
   if(b)b.value=audioState.bgmVolume;
   if(s)s.value=audioState.seVolume;
   if(m)m.textContent=audioState.muted?"🔇 ミュート中":"🔊 音声";
+  const sb=document.getElementById("settingsBgmVolume"); if(sb)sb.value=audioState.bgmVolume;
+  const ss=document.getElementById("settingsSeVolume"); if(ss)ss.value=audioState.seVolume;
 }
 
 
-const UI_PREF_KEY="super_bear_ui_prefs_v1";
+const UI_PREF_KEY="super_bear_ui_prefs_v2";
 let boardDisplayMode="board";
+let cardDisplayMode="1s";
+let animationSpeed="normal";
+let authorityCardManualResolver=null;
 
 function loadUiPrefs(){
   try{
     const p=JSON.parse(localStorage.getItem(UI_PREF_KEY)||"{}");
     if(p.boardDisplayMode==="effects"||p.boardDisplayMode==="board")boardDisplayMode=p.boardDisplayMode;
+    if(["off","1s","2s","manual"].includes(p.cardDisplayMode))cardDisplayMode=p.cardDisplayMode;
+    if(["slow","normal","fast"].includes(p.animationSpeed))animationSpeed=p.animationSpeed;
   }catch(e){}
-  const sel=document.getElementById("boardModeSelect");
-  if(sel)sel.value=boardDisplayMode;
+  syncSettingsControls();
   applyBoardMode();
 }
 function saveUiPrefs(){
-  try{localStorage.setItem(UI_PREF_KEY,JSON.stringify({boardDisplayMode}));}catch(e){}
+  try{localStorage.setItem(UI_PREF_KEY,JSON.stringify({boardDisplayMode,cardDisplayMode,animationSpeed}));}catch(e){}
+}
+function syncSettingsControls(){
+  const sel=document.getElementById("boardModeSelect"); if(sel)sel.value=boardDisplayMode;
+  document.querySelectorAll('input[name="settingsBoardMode"]').forEach(x=>x.checked=x.value===boardDisplayMode);
+  document.querySelectorAll('input[name="cardDisplayMode"]').forEach(x=>x.checked=x.value===cardDisplayMode);
+  document.querySelectorAll('input[name="animationSpeed"]').forEach(x=>x.checked=x.value===animationSpeed);
+  const sb=document.getElementById("settingsBgmVolume"); if(sb)sb.value=audioState.bgmVolume;
+  const ss=document.getElementById("settingsSeVolume"); if(ss)ss.value=audioState.seVolume;
+  syncAudioControls();
 }
 function setBoardMode(mode){
   boardDisplayMode=mode==="effects"?"effects":"board";
-  const sel=document.getElementById("boardModeSelect");
-  if(sel && sel.value!==boardDisplayMode)sel.value=boardDisplayMode;
-  applyBoardMode();saveUiPrefs();
+  applyBoardMode();saveUiPrefs();syncSettingsControls();
 }
+function setCardDisplayMode(mode){
+  cardDisplayMode=["off","1s","2s","manual"].includes(mode)?mode:"1s";
+  saveUiPrefs();syncSettingsControls();
+}
+function setAnimationSpeed(mode){
+  animationSpeed=["slow","normal","fast"].includes(mode)?mode:"normal";
+  saveUiPrefs();syncSettingsControls();
+}
+function animationMultiplier(){ return animationSpeed==="slow"?1.45:animationSpeed==="fast"?.68:1; }
+function pacedSleep(ms){ return sleep(Math.max(0,Math.round(ms*animationMultiplier()))); }
 function applyBoardMode(){
   const board=document.getElementById("board");
   if(!board)return;
   board.classList.toggle("effects-only",boardDisplayMode==="effects");
   const title=document.querySelector("#boardPanel .panel-title");
   if(title)title.innerHTML=boardDisplayMode==="effects"
-    ? 'スーパー店内 ― マスの効果表示 <span class="asset-health">簡易表示</span>'
-    : 'スーパー店内 ― 実物ボード画像 <span class="asset-health">見やすさ補正</span>';
+    ? 'スーパー店内 ― 効果のみ <span class="asset-health">簡易表示</span>'
+    : 'スーパー店内 ― オリジナル盤面 <span class="asset-health">画像内蔵版</span>';
+}
+function showSettings(){
+  unlockAudio();playSe("ui");syncSettingsControls();
+  const el=document.getElementById("settingsOverlay");
+  if(el){el.classList.add("show");el.setAttribute("aria-hidden","false");}
+}
+function hideSettings(){
+  playSe("ui");
+  const el=document.getElementById("settingsOverlay");
+  if(el){el.classList.remove("show");el.setAttribute("aria-hidden","true");}
 }
 function showHowToPlay(){
   unlockAudio();playSe("ui");
@@ -1482,8 +1612,8 @@ function authorityCardEffectText(id,p={}){
   return AUTH_CARDS[id]?.name||"カード効果";
 }
 async function showAuthorityCpuCardPresentation(id,p={}){
-  // The user only needs this pacing aid when playing as Bear against Authority CPU.
-  if(!S || S.playerSide!=="bear" || S.currentSide!=="authority")return;
+  // This aid is only shown when the player is Bear against Authority CPU.
+  if(!S || S.playerSide!=="bear" || S.currentSide!=="authority" || cardDisplayMode==="off")return;
   const c=AUTH_CARDS[id]; if(!c)return;
   const overlay=document.getElementById("authorityCardToast");
   const img=document.getElementById("authorityCardToastImg");
@@ -1492,10 +1622,23 @@ async function showAuthorityCpuCardPresentation(id,p={}){
   if(!overlay||!img||!name||!effect)return;
   img.src=AUTH_CARD_IMAGES[id]||"";img.alt=c.name;
   name.textContent=c.name;effect.textContent=authorityCardEffectText(id,p);
+  overlay.classList.toggle("manual",cardDisplayMode==="manual");
   overlay.classList.add("show");
-  await sleep(1000);
-  overlay.classList.remove("show");
+  if(cardDisplayMode==="manual"){
+    await new Promise(resolve=>{ authorityCardManualResolver=resolve; });
+  }else{
+    await sleep(cardDisplayMode==="2s"?2000:1000);
+  }
+  overlay.classList.remove("show","manual");
+  authorityCardManualResolver=null;
 }
+function closeAuthorityCardPresentation(){
+  playSe("ui",0.55);
+  const overlay=document.getElementById("authorityCardToast");
+  if(overlay)overlay.classList.remove("show","manual");
+  if(authorityCardManualResolver){const r=authorityCardManualResolver;authorityCardManualResolver=null;r();}
+}
+
 
 function enterFromTitle() {
   unlockAudio();
@@ -1766,7 +1909,7 @@ async function playShootingPresentation(roll, damage, actorLabel="スーパー�
   die.textContent="?";
   die.classList.remove("rolling");
   message.textContent=`${actorLabel}が銃撃カードを使用！`;
-  await sleep(650);
+  await pacedSleep(650);
 
   message.textContent="サイコロを振ります……";
   die.classList.add("rolling");
@@ -1780,18 +1923,18 @@ async function playShootingPresentation(roll, damage, actorLabel="スーパー�
   die.classList.remove("rolling");
   die.textContent=String(roll);
   message.textContent=`出目は…… ${roll}！`;
-  await sleep(850);
+  await pacedSleep(850);
 
   playSe("shot");
   flashScreen();
-  await sleep(180);
+  await pacedSleep(180);
 
   if(damage<=0) {
     message.innerHTML=`出目 ${roll} → <span style="color:#9fd7a9">ダメージなし！</span>`;
   } else {
     message.innerHTML=`出目 ${roll} → <span class="shoot-damage">${damage}ダメージ！</span>`;
   }
-  await sleep(1050);
+  await pacedSleep(1050);
   overlay.classList.remove("show");
 }
 
@@ -1896,7 +2039,12 @@ function renderBoard() {
 
     d.innerHTML=`<span class="cell-id">${id}</span><span class="effect">${c.walkable?cellLabel(id):"設備"}</span>`;
     if(S && S.bearPos===id) {
-      const bear=document.createElement("span"); bear.className="bear"; bear.textContent="🐻"; d.appendChild(bear);
+      const status=document.createElement("span"); status.className="bear-status";
+      const bear=document.createElement("span"); bear.className="bear"; bear.textContent="🐻";
+      const hearts=document.createElement("span"); hearts.className="bear-hearts"+(S.hp<=0?" zero":"");
+      hearts.setAttribute("aria-label",`体力 ${Math.max(0,S.hp)}`);
+      hearts.textContent=S.hp>0?"♥".repeat(Math.min(5,S.hp)):"♡";
+      status.appendChild(bear);status.appendChild(hearts);d.appendChild(status);
     }
     if(S && S.tokens[id]) {
       const box=document.createElement("span"); box.className="tokens";
@@ -2937,7 +3085,7 @@ async function aiAuthorityTurn() {
     const ok=await executeAuthorityAIAction(action);
     if(!ok)break;
     used++;
-    await sleep(difficulty==="hard"?260:180);
+    await pacedSleep(difficulty==="hard"?260:180);
   }
 
   log(`🤖 スーパー当局CPU「${diff.theme}」の行動終了。`);
@@ -3137,7 +3285,7 @@ function scorePath(path) {
 
 async function aiCommitPath(path) {
   // Pause briefly before the first step so the selected route can be read.
-  await sleep(380);
+  await pacedSleep(380);
 
   for(let i=1;i<path.length;i++) {
     const prev=S.bearPos, n=path[i];
@@ -3157,7 +3305,7 @@ async function aiCommitPath(path) {
     log(`🤖 🐻 ${prev} → ${n}`);
 
     // A visible per-square pace. Slow enough to follow without making long moves tedious.
-    await sleep(480);
+    await pacedSleep(480);
 
     if(n==="A10") {
       bearWin("CPUベアーがGOALへ到達しました。");
@@ -3170,13 +3318,13 @@ async function aiCommitPath(path) {
       log("🤖 🍯 当局の蜂蜜で強制停止。");
       render();
       pulseBearCell();
-      await sleep(420);
+      await pacedSleep(420);
       break;
     }
   }
 
   render();
-  await sleep(250);
+  await pacedSleep(250);
   await resolveStopAI();
 }
 
@@ -3381,13 +3529,13 @@ async function playBearDicePresentation(mode,a,b=null) {
     dieA.textContent=String(randD6());
     if(dieB)dieB.textContent=String(randD6());
     // 前半は軽快、後半は少しずつ減速して出目確定感を出す
-    await sleep(75 + i*12);
+    await pacedSleep(75 + i*12);
   }
   dieA.textContent=String(a);
   if(dieB)dieB.textContent=String(b);
   document.getElementById("bearDiceCaption").textContent = mode==="double" ? "ハチミツで勢いアップ！" : "出目が決まりました";
   document.getElementById("bearDiceTotal").textContent = mode==="double" ? `${a} + ${b} = ${a+b}` : `${a}`;
-  await sleep(mode==="double" ? 700 : 560);
+  await pacedSleep(mode==="double" ? 700 : 560);
   hideBearFx();
 }
 
