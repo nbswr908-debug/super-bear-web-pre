@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SUPER BEAR Web Pre v1.22</title>
+<title>SUPER BEAR Web Pre v1.23</title>
 <style>
 :root {
   --bg:#151a22; --panel:#222a36; --panel2:#2a3442; --text:#eef3f7;
@@ -947,6 +947,106 @@ button:disabled { opacity:.38; cursor:not-allowed; filter:none!important; }
 }
 
 
+
+/* ===== v1.23 readability / rules / authority action presentation ===== */
+.title-menu-buttons{display:flex;flex-direction:column;align-items:center;gap:10px;}
+.title-secondary{
+  min-width:min(360px,84vw);border:1px solid #65758a;border-radius:15px;
+  padding:12px 24px;font-size:17px;font-weight:900;cursor:pointer;
+  color:#eef7ff;background:#263445;
+}
+.title-secondary:hover{filter:brightness(1.10);}
+.display-controls{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end;font-size:11px;color:#c5d2df;}
+.display-controls select{
+  border:1px solid #56677a;background:#263445;color:#fff;border-radius:8px;padding:5px 7px;font-size:11px;
+}
+
+/* The real board image is softened without dimming tokens or labels. */
+.board::before{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:rgba(225,231,236,.26);
+}
+.board .cell{z-index:1;}
+.board .cell.legal,.board .cell.targetable,.board .cell.selected-target{z-index:3;}
+.bear{
+  background:rgba(248,251,255,.93);border:2px solid #15202c;border-radius:999px;
+  padding:2px 4px;box-shadow:0 2px 8px rgba(0,0,0,.75);filter:none!important;
+}
+.token{
+  background:rgba(10,16,24,.94);border:2px solid rgba(255,255,255,.92);
+  border-radius:7px;padding:1px 4px;box-shadow:0 2px 8px rgba(0,0,0,.78);
+}
+
+/* Effects-only board: keep the map topology and effects, remove illustration noise. */
+.board.effects-only{
+  background:#202936!important;
+  border:2px solid #536276;
+}
+.board.effects-only::before{display:none;}
+.board.effects-only .cell{
+  border:1px solid rgba(210,221,232,.27)!important;
+  background:rgba(53,65,81,.76)!important;
+  color:#f5f8fb!important;
+}
+.board.effects-only .cell.blocked{
+  background:rgba(17,24,34,.70)!important;border-color:rgba(70,82,96,.32)!important;
+  color:transparent!important;
+}
+.board.effects-only .cell.heal{background:rgba(43,101,121,.82)!important;}
+.board.effects-only .cell.damage{background:rgba(112,57,64,.84)!important;}
+.board.effects-only .cell.rest{background:rgba(83,74,113,.84)!important;}
+.board.effects-only .cell.item{background:rgba(111,93,37,.84)!important;}
+.board.effects-only .cell.start{background:rgba(36,111,79,.86)!important;}
+.board.effects-only .cell.goal{background:rgba(139,105,28,.90)!important;}
+.board.effects-only .cell-id{opacity:.75!important;color:#dce7f2!important;}
+.board.effects-only .effect{
+  font-size:clamp(10px,1.1vw,15px)!important;line-height:1.12;text-shadow:0 1px 3px #000;
+}
+
+.authority-card-toast{
+  position:fixed;inset:0;z-index:86;display:none;align-items:center;justify-content:center;
+  pointer-events:none;background:rgba(4,8,13,.34);
+}
+.authority-card-toast.show{display:flex;}
+.authority-card-toast-card{
+  width:min(470px,90vw);display:grid;grid-template-columns:132px 1fr;gap:16px;align-items:center;
+  padding:16px;border-radius:18px;border:1px solid rgba(255,255,255,.22);
+  background:rgba(19,27,38,.97);box-shadow:0 20px 65px rgba(0,0,0,.65);
+  animation:authorityCardPop .16s ease-out;
+}
+.authority-card-toast-card img{width:132px;max-height:185px;object-fit:contain;border-radius:8px;background:#111;}
+.authority-card-toast-kicker{font-size:11px;font-weight:900;color:#8fd8ff;letter-spacing:.10em;}
+.authority-card-toast-name{font-size:25px;font-weight:1000;margin:3px 0 7px;}
+.authority-card-toast-effect{font-size:14px;line-height:1.55;color:#e6edf4;}
+@keyframes authorityCardPop{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
+
+.rules-overlay{
+  position:fixed;inset:0;z-index:110;display:none;align-items:center;justify-content:center;
+  padding:max(10px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left));
+  background:rgba(5,9,14,.92);
+}
+.rules-overlay.show{display:flex;}
+.rules-card{
+  width:min(820px,96vw);max-height:92dvh;overflow:auto;-webkit-overflow-scrolling:touch;
+  background:#222c39;border:1px solid #5a697c;border-radius:18px;padding:22px;color:#eef3f7;
+  box-shadow:0 24px 80px #000b;
+}
+.rules-card h2{margin:0 0 8px;font-size:28px;}
+.rules-card h3{margin:20px 0 7px;color:#f2c84b;font-size:17px;}
+.rules-card p,.rules-card li{font-size:13px;line-height:1.7;color:#d7e1ea;}
+.rules-card ul{padding-left:20px;margin:6px 0;}
+.rules-card .rules-lead{color:#aebdcb;margin-bottom:14px;}
+.rules-close{position:sticky;bottom:0;margin-top:18px;background:#222c39;padding-top:8px;}
+
+@media (max-width:900px){
+  .display-controls{justify-content:center;}
+  .authority-card-toast-card{grid-template-columns:104px 1fr;gap:12px;padding:12px;}
+  .authority-card-toast-card img{width:104px;max-height:150px;}
+  .authority-card-toast-name{font-size:21px;}
+  .authority-card-toast-effect{font-size:12px;}
+  .rules-card{padding:17px 14px;}
+}
+
 .deck-stat{min-width:142px;}
 .deck-stat b{font-size:15px;line-height:1.25;}
 .deck-stat small{font-size:10px;color:#aab6c2;font-weight:700;}
@@ -967,15 +1067,78 @@ button:disabled { opacity:.38; cursor:not-allowed; filter:none!important; }
     <div class="title-logo"><span class="bear-mark">🐻</span> SUPER BEAR</div>
     <div class="title-tagline">スーパーを駆け抜け、出口を目指せ。</div>
     <div class="title-versus"><span>🐻</span><span class="vs">VS</span><span>🏪</span></div>
-    <button class="title-start" type="button" onclick="enterFromTitle()">GAME START</button>
+    <div class="title-menu-buttons">
+      <button class="title-start" type="button" onclick="enterFromTitle()">GAME START</button>
+      <button class="title-secondary" type="button" onclick="showHowToPlay()">あそびかた</button>
+    </div>
     <div class="title-audio-note">STARTを押すとBGM・SEが有効になります（オフライン動作）。</div>
+  </div>
+</div>
+
+<div id="rulesOverlay" class="rules-overlay" aria-hidden="true">
+  <div class="rules-card">
+    <h2>🐻 あそびかた</h2>
+    <p class="rules-lead">スーパーベアーはスーパーの出口を目指し、スーパー当局は罠や妨害で阻止します。</p>
+    <h3>勝利条件</h3>
+    <ul>
+      <li><b>スーパーベアー：</b>GOAL（A10）へ到達すると即勝利。移動数が余っていても構いません。</li>
+      <li><b>スーパー当局：</b>ベアーの体力を0にするか、箱罠で捕獲すると勝利です。</li>
+    </ul>
+    <h3>ゲーム開始</h3>
+    <ul>
+      <li>ベアーの体力は5、民意は0から開始します。</li>
+      <li>当局は通常山札20枚から5枚を初期手札にし、最初の当局ターン開始時に1枚引きます。</li>
+      <li>ベアーが先手です。</li>
+    </ul>
+    <h3>ベアーのターン</h3>
+    <ul>
+      <li>ターン開始時に体力が1減ります（「1回休み」の場合はそのターンを休み、体力は減りません）。</li>
+      <li>必要ならアイテムを使い、その後サイコロ等で決まった数だけ上下左右に移動します。斜め移動はできません。</li>
+      <li>通常移動では同じ移動中に同じマスへ戻れません。マス効果は基本的に最後に止まったマスで解決します。</li>
+    </ul>
+    <h3>ベアーの主なアイテム</h3>
+    <ul>
+      <li><b>にぼし：</b>1～6の好きな移動数を選びます。</li>
+      <li><b>ハチミツ：</b>サイコロを2回振り、合計値で移動します。バリケードを突破・破壊できます。</li>
+      <li><b>ボルトカッター：</b>箱罠による捕獲を1回防ぎ、その箱罠を破壊します。</li>
+      <li><b>役所への抗議：</b>民意を10下げます。</li>
+      <li><b>現金：</b>在庫にある好きなベアー用アイテム1個と交換します。</li>
+    </ul>
+    <h3>スーパー当局のターン</h3>
+    <ul>
+      <li>ターン開始時に民意が5上がり、山札からカードを1枚引きます。</li>
+      <li>同じ名前のカードは1ターンに1回まで。異なるカードは複数使用できます。</li>
+      <li><b>箱罠：</b>停止したベアーを捕獲。<b>バリケード：</b>通常移動を遮断。<b>蜂蜜：</b>進入したベアーをその場で停止させます。</li>
+      <li><b>SNS投稿：</b>民意+10。<b>知事：</b>民意+20。</li>
+      <li><b>銃撃：</b>民意50を消費してサイコロを振り、出目に応じて0～3ダメージを与えます。</li>
+    </ul>
+    <h3>罠・設置物について</h3>
+    <ul>
+      <li>箱罠は通過するだけでは発動せず、停止した時に捕獲判定を行います。</li>
+      <li>当局の蜂蜜は進入時に発動し、残り移動を失います。</li>
+      <li>当局側の設置物は、ベアーの現在地とそこから通常1歩で進めるマスには置けません。START・GOALにも設置できません。</li>
+    </ul>
+    <h3>盤面表示</h3>
+    <p>ゲーム中の「盤面表示」から、実物ボード（見やすさ補正）と「マスの効果だけ」をいつでも切り替えられます。ゲーム内容や判定は変わりません。</p>
+    <div class="rules-close"><button class="big-button primary" type="button" onclick="hideHowToPlay()">タイトルへ戻る</button></div>
+  </div>
+</div>
+
+<div id="authorityCardToast" class="authority-card-toast" aria-live="polite">
+  <div class="authority-card-toast-card">
+    <img id="authorityCardToastImg" alt="">
+    <div>
+      <div class="authority-card-toast-kicker">スーパー当局がカードを使用</div>
+      <div id="authorityCardToastName" class="authority-card-toast-name"></div>
+      <div id="authorityCardToastEffect" class="authority-card-toast-effect"></div>
+    </div>
   </div>
 </div>
 
 <div id="app">
   <div class="header">
     <div>
-      <div class="title">🐻 SUPER BEAR <span style="font-size:13px;color:#f2c84b">Web Pre v1.22</span></div>
+      <div class="title">🐻 SUPER BEAR <span style="font-size:13px;color:#f2c84b">Web Pre v1.23</span></div>
       <div class="subtitle">URL配布用プレ版 / PC・スマホ・タブレット対応</div>
     </div>
     <div class="stats">
@@ -991,6 +1154,14 @@ button:disabled { opacity:.38; cursor:not-allowed; filter:none!important; }
       <label>SE <input id="seVolume" type="range" min="0" max="1" step="0.05" value="0.72" oninput="setSeVolume(this.value)"></label>
       <button id="muteButton" class="audio-mini-btn" type="button" onclick="toggleMute()">🔊 音声</button>
       <span id="bgmDangerIndicator" class="bgm-danger-indicator">⚠ 民意50+：緊張BGM</span>
+      <div class="display-controls">
+        <label>盤面表示
+          <select id="boardModeSelect" onchange="setBoardMode(this.value)">
+            <option value="board">実物ボード（見やすさ補正）</option>
+            <option value="effects">マスの効果だけ</option>
+          </select>
+        </label>
+      </div>
     </div>
   </div>
   <div class="layout">
@@ -1258,6 +1429,72 @@ function syncAudioControls() {
   if(b)b.value=audioState.bgmVolume;
   if(s)s.value=audioState.seVolume;
   if(m)m.textContent=audioState.muted?"🔇 ミュート中":"🔊 音声";
+}
+
+
+const UI_PREF_KEY="super_bear_ui_prefs_v1";
+let boardDisplayMode="board";
+
+function loadUiPrefs(){
+  try{
+    const p=JSON.parse(localStorage.getItem(UI_PREF_KEY)||"{}");
+    if(p.boardDisplayMode==="effects"||p.boardDisplayMode==="board")boardDisplayMode=p.boardDisplayMode;
+  }catch(e){}
+  const sel=document.getElementById("boardModeSelect");
+  if(sel)sel.value=boardDisplayMode;
+  applyBoardMode();
+}
+function saveUiPrefs(){
+  try{localStorage.setItem(UI_PREF_KEY,JSON.stringify({boardDisplayMode}));}catch(e){}
+}
+function setBoardMode(mode){
+  boardDisplayMode=mode==="effects"?"effects":"board";
+  const sel=document.getElementById("boardModeSelect");
+  if(sel && sel.value!==boardDisplayMode)sel.value=boardDisplayMode;
+  applyBoardMode();saveUiPrefs();
+}
+function applyBoardMode(){
+  const board=document.getElementById("board");
+  if(!board)return;
+  board.classList.toggle("effects-only",boardDisplayMode==="effects");
+  const title=document.querySelector("#boardPanel .panel-title");
+  if(title)title.innerHTML=boardDisplayMode==="effects"
+    ? 'スーパー店内 ― マスの効果表示 <span class="asset-health">簡易表示</span>'
+    : 'スーパー店内 ― 実物ボード画像 <span class="asset-health">見やすさ補正</span>';
+}
+function showHowToPlay(){
+  unlockAudio();playSe("ui");
+  const el=document.getElementById("rulesOverlay");
+  if(el){el.classList.add("show");el.setAttribute("aria-hidden","false");}
+}
+function hideHowToPlay(){
+  playSe("ui");
+  const el=document.getElementById("rulesOverlay");
+  if(el){el.classList.remove("show");el.setAttribute("aria-hidden","true");}
+}
+function authorityCardEffectText(id,p={}){
+  if(id==="box_trap")return `${p.cell||"指定マス"} に箱罠を設置。停止したベアーを捕獲します。`;
+  if(id==="authority_honey")return `${p.cell||"指定マス"} に蜂蜜を設置。進入したベアーの残り移動を終了させます。`;
+  if(id==="barricade")return `${p.a||"指定マス"}－${p.b||"指定マス"} 間にバリケードを設置。通常移動を遮断します。`;
+  if(id==="sns_post")return `民意を10上昇させます。`;
+  if(id==="governor")return `民意を20上昇させます。`;
+  if(id==="shooting")return `民意50を消費し、サイコロの出目に応じて0～3ダメージを与えます。`;
+  return AUTH_CARDS[id]?.name||"カード効果";
+}
+async function showAuthorityCpuCardPresentation(id,p={}){
+  // The user only needs this pacing aid when playing as Bear against Authority CPU.
+  if(!S || S.playerSide!=="bear" || S.currentSide!=="authority")return;
+  const c=AUTH_CARDS[id]; if(!c)return;
+  const overlay=document.getElementById("authorityCardToast");
+  const img=document.getElementById("authorityCardToastImg");
+  const name=document.getElementById("authorityCardToastName");
+  const effect=document.getElementById("authorityCardToastEffect");
+  if(!overlay||!img||!name||!effect)return;
+  img.src=AUTH_CARD_IMAGES[id]||"";img.alt=c.name;
+  name.textContent=c.name;effect.textContent=authorityCardEffectText(id,p);
+  overlay.classList.add("show");
+  await sleep(1000);
+  overlay.classList.remove("show");
 }
 
 function enterFromTitle() {
@@ -1602,7 +1839,7 @@ function cellClass(cell) {
 }
 
 function render() {
-  renderBoard(); renderStats(); renderHand(); renderInventory();
+  renderBoard(); applyBoardMode(); renderStats(); renderHand(); renderInventory();
   renderMobileHud();
   syncGameplayBgm();
 }
@@ -2085,6 +2322,7 @@ function authorityTargetCell(id) {
 async function executeAuthorityCard(id,p) {
   if(!S.hand.includes(id)||S.usedAuth.has(id))return false;
   const c=AUTH_CARDS[id];
+  await showAuthorityCpuCardPresentation(id,p||{});
   if(c.kind==="opinion") {
     playSe("card");
     S.opinion+=c.value; clampOpinion();
@@ -3391,6 +3629,7 @@ function verifyEmbeddedAssets() {
 
 (function initialBoard() {
   loadAudioPrefs();
+  loadUiPrefs();
   S = newState("bear","normal");
   render();
   actionHTML("<h3>ゲーム開始待ち</h3><p>陣営を選択してください。</p>");
