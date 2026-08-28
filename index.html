@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SUPER BEAR Web Pre v1.29</title>
+<title>SUPER BEAR Web Pre v1.30</title>
 <style>
 :root {
   --bg:#151a22; --panel:#222a36; --panel2:#2a3442; --text:#eef3f7;
@@ -1220,28 +1220,70 @@ button:disabled { opacity:.38; cursor:not-allowed; filter:none!important; }
 }
 
 
-/* ===== v1.29 mobile card / item full-image fix ===== */
-/* Hi-res card source ratio: 660 x 1010. Never crop card tops/bottoms. */
-.card-btn{aspect-ratio:660 / 1010;}
+/* ===== v1.30 mobile card / item Safari-safe full-image fix ===== */
+/*
+   Let the image itself determine card height.  This deliberately avoids
+   percentage-height + aspect-ratio inside <button>, which can crop or shrink
+   the image in mobile Safari.  Interaction remains on the original button;
+   no overlay or click handler is replaced.
+*/
+.card-btn{
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  aspect-ratio:auto!important;
+  padding:0!important;
+  overflow:hidden!important;
+  line-height:0!important;
+  box-sizing:border-box!important;
+  position:relative!important;
+}
 .card-thumb{
-  width:100%!important;height:100%!important;max-height:none!important;
-  object-fit:contain!important;object-position:center center!important;
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  max-height:none!important;
+  min-height:0!important;
+  object-fit:initial!important;
+  object-position:initial!important;
+  vertical-align:top!important;
+  pointer-events:none!important;
   background:#111923;
 }
-.inv-card{aspect-ratio:660 / 1010;}
+/* Keep badge / used-state controls interactive and visible above the image. */
+.card-btn .badge,.card-used-mask{line-height:normal!important;}
+
+.inv-card{
+  display:block!important;
+  height:auto!important;
+  aspect-ratio:auto!important;
+  line-height:0!important;
+  overflow:hidden!important;
+  position:relative!important;
+}
 .inv-card img{
-  width:100%!important;height:100%!important;max-height:none!important;
-  object-fit:contain!important;object-position:center center!important;
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  max-height:none!important;
+  min-height:0!important;
+  object-fit:initial!important;
+  object-position:initial!important;
+  vertical-align:top!important;
+  pointer-events:none!important;
   background:#201d12;
 }
+.inv-card .inv-count{line-height:normal!important;}
+
 @media (max-width:900px){
-  .card-btn{min-height:0!important;aspect-ratio:660 / 1010!important;padding:0!important;}
-  .card-thumb{height:100%!important;max-height:none!important;object-fit:contain!important;}
-  .inv-card{aspect-ratio:660 / 1010!important;}
-  .inv-card img{height:100%!important;max-height:none!important;object-fit:contain!important;}
+  .card-btn{height:auto!important;min-height:0!important;aspect-ratio:auto!important;}
+  .card-thumb{width:100%!important;height:auto!important;max-height:none!important;}
+  .inv-card{height:auto!important;aspect-ratio:auto!important;}
+  .inv-card img{width:100%!important;height:auto!important;max-height:none!important;}
 }
 @media (max-width:520px){
-  /* Two columns make the full card art and text readable on phones. */
+  /* Two columns keep the complete card readable without clipping. */
   .card-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
 }
 </style>
@@ -1372,7 +1414,7 @@ button:disabled { opacity:.38; cursor:not-allowed; filter:none!important; }
 <div id="app">
   <div class="header">
     <div>
-      <div class="title">🐻 SUPER BEAR <span style="font-size:13px;color:#f2c84b">Web Pre v1.29</span></div>
+      <div class="title">🐻 SUPER BEAR <span style="font-size:13px;color:#f2c84b">Web Pre v1.30</span></div>
       <div class="subtitle">URL配布用プレ版 / PC・スマホ・タブレット対応</div>
     </div>
     <div class="stats">
