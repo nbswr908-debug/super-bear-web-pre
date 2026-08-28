@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SUPER BEAR Web Pre v1.25</title>
+<title>SUPER BEAR Web Pre v1.26</title>
 <style>
 :root {
   --bg:#151a22; --panel:#222a36; --panel2:#2a3442; --text:#eef3f7;
@@ -1152,6 +1152,73 @@ button:disabled { opacity:.38; cursor:not-allowed; filter:none!important; }
   .bear-hearts{top:1px!important;font-size:7px!important;}
 }
 
+/* ===== v1.26 smartphone board-first UI ===== */
+.mobile-board-toolbar{display:none;}
+.mobile-sidebar-close{display:none;}
+@media(max-width:900px){
+  body{padding-bottom:calc(66px + env(safe-area-inset-bottom));}
+  #app{padding:0 6px calc(74px + env(safe-area-inset-bottom));}
+  .header{
+    position:sticky;top:0;z-index:38;
+    margin:0 -6px 6px;border-radius:0;
+    padding:5px 7px;background:rgba(19,27,37,.97);
+    backdrop-filter:blur(10px);box-shadow:0 4px 14px #0008;
+  }
+  .header>div:first-child,.header .audio-controls{display:none!important;}
+  .stats{grid-template-columns:repeat(4,1fr)!important;gap:3px;}
+  .stat{display:block!important;padding:3px 2px!important;min-width:0!important;font-size:8px!important;border-radius:7px!important;}
+  .stat b{font-size:11px!important;line-height:1.1;}
+  .stat:nth-child(5),.stat:nth-child(6){display:none!important;}
+  .layout{display:block!important;}
+  #boardPanel{border-radius:8px;}
+  #boardPanel .panel-title{display:none;}
+  .opinion-app-wrap{display:none;}
+  .asset-note{display:none;}
+  .mobile-board-toolbar{
+    display:flex;position:sticky;top:47px;z-index:34;
+    align-items:center;justify-content:center;gap:5px;
+    padding:5px;background:rgba(26,35,47,.96);border-bottom:1px solid #3e4b5d;
+  }
+  .mobile-board-toolbar button{
+    min-height:36px;padding:5px 9px;border:1px solid #56687e;border-radius:8px;
+    background:#263546;color:#fff;font-weight:800;font-size:11px;
+  }
+  .mobile-board-toolbar button.primary{background:#78611f;border-color:#d3ad38;}
+  .mobile-board-toolbar .zoom-label{font-size:10px;color:#b9c7d6;min-width:38px;text-align:center;}
+  .board-wrap{height:calc(100dvh - 158px);min-height:410px;padding:4px!important;overflow:auto!important;}
+  .board{
+    min-width:var(--mobile-board-width,900px)!important;
+    width:var(--mobile-board-width,900px)!important;
+    max-width:none!important;
+  }
+  .board.mobile-fit{min-width:100%!important;width:100%!important;}
+  #sidebarPanel{
+    display:none;position:fixed;z-index:80;left:5px;right:5px;bottom:calc(64px + env(safe-area-inset-bottom));
+    max-height:min(50dvh,430px);min-height:0!important;overflow:auto;
+    border:1px solid #526176;border-radius:14px;box-shadow:0 -12px 34px #000b;
+    background:rgba(29,38,50,.99);
+  }
+  #sidebarPanel.mobile-open{display:flex;}
+  #sidebarPanel>.panel-title{
+    display:flex;position:sticky;top:0;z-index:2;align-items:center;justify-content:space-between;
+    padding:8px 10px;font-size:13px;background:#18212d;
+  }
+  .mobile-sidebar-close{display:inline-flex;min-height:32px!important;padding:3px 10px!important;border:1px solid #65768a;border-radius:8px;background:#2b394a;color:#fff;}
+  #sidebarPanel.mobile-tab-action .cards,#sidebarPanel.mobile-tab-action .inventory,#sidebarPanel.mobile-tab-action .log,#sidebarPanel.mobile-tab-action .help{display:none!important;}
+  #sidebarPanel.mobile-tab-hand .action,#sidebarPanel.mobile-tab-hand .inventory,#sidebarPanel.mobile-tab-hand .log,#sidebarPanel.mobile-tab-hand .help{display:none!important;}
+  #sidebarPanel.mobile-tab-item .action,#sidebarPanel.mobile-tab-item .cards,#sidebarPanel.mobile-tab-item .log,#sidebarPanel.mobile-tab-item .help{display:none!important;}
+  #sidebarPanel.mobile-tab-log .action,#sidebarPanel.mobile-tab-log .cards,#sidebarPanel.mobile-tab-log .inventory,#sidebarPanel.mobile-tab-log .help{display:none!important;}
+  #sidebarPanel .action,#sidebarPanel .cards,#sidebarPanel .inventory{padding:10px!important;}
+  #sidebarPanel .log{min-height:210px;max-height:310px;}
+  .mobile-dock{
+    grid-template-columns:repeat(5,1fr)!important;gap:3px!important;padding:5px max(5px,env(safe-area-inset-right)) calc(5px + env(safe-area-inset-bottom)) max(5px,env(safe-area-inset-left))!important;
+  }
+  .mobile-dock-stat{display:none!important;}
+  .mobile-dock-btn{min-height:48px!important;font-size:10px!important;padding:3px!important;}
+  .mobile-dock-btn .dock-icon{display:block;font-size:17px;line-height:1.1;}
+  .mobile-orientation-hint{display:none!important;}
+}
+
 </style>
 <meta name="theme-color" content="#222a36">
 <meta name="theme-color" content="#222a36">
@@ -1280,7 +1347,7 @@ button:disabled { opacity:.38; cursor:not-allowed; filter:none!important; }
 <div id="app">
   <div class="header">
     <div>
-      <div class="title">🐻 SUPER BEAR <span style="font-size:13px;color:#f2c84b">Web Pre v1.25</span></div>
+      <div class="title">🐻 SUPER BEAR <span style="font-size:13px;color:#f2c84b">Web Pre v1.26</span></div>
       <div class="subtitle">URL配布用プレ版 / PC・スマホ・タブレット対応</div>
     </div>
     <div class="stats">
@@ -1315,10 +1382,17 @@ button:disabled { opacity:.38; cursor:not-allowed; filter:none!important; }
         <div class="opinion-labels"><span style="left:0%">0</span><span style="left:25%">25</span><span style="left:50%">50</span><span style="left:75%">75</span><span style="left:100%">100</span></div>
       </div>
       <div class="asset-note">黄色枠＝移動候補／水色枠＝当局の配置候補。座標はテスト用の小表示です。</div>
+      <div class="mobile-board-toolbar" aria-label="スマホ盤面操作">
+        <button type="button" onclick="mobileBoardZoom(-1)">－</button>
+        <span id="mobileZoomLabel" class="zoom-label">100%</span>
+        <button type="button" onclick="mobileBoardZoom(1)">＋</button>
+        <button type="button" class="primary" onclick="mobileFocusBear()">🐻 ベアー</button>
+        <button type="button" onclick="mobileToggleFit()">▦ 全体</button>
+      </div>
       <div class="board-wrap"><div id="board" class="board"></div></div>
     </div>
     <div id="sidebarPanel" class="panel sidebar">
-      <div class="panel-title">操作</div>
+      <div class="panel-title"><span id="mobileSidebarTitle">操作</span><button type="button" class="mobile-sidebar-close" onclick="mobileShowTab('board')">閉じる</button></div>
       <div id="action" class="action"></div>
       <div class="cards">
         <h3 id="handTitle" style="margin:0 0 8px">スーパー当局 手札</h3>
@@ -1340,11 +1414,11 @@ button:disabled { opacity:.38; cursor:not-allowed; filter:none!important; }
 
 
 <div id="mobileDock" class="mobile-dock" aria-label="モバイル操作ナビ">
-  <div class="mobile-dock-stat">体力<b id="mobileHp">5/5</b></div>
-  <div class="mobile-dock-stat">民意<b id="mobileOpinion">0</b></div>
-  <div class="mobile-dock-stat">山札<b id="mobileDeck">N20</b></div>
-  <button type="button" class="mobile-dock-btn primary" onclick="mobileJumpBoard()">🎲 盤面</button>
-  <button type="button" class="mobile-dock-btn" onclick="mobileJumpAction()">☰ 操作</button>
+  <button type="button" id="dockBoard" class="mobile-dock-btn primary" onclick="mobileShowTab('board')"><span class="dock-icon">🎲</span>盤面</button>
+  <button type="button" id="dockAction" class="mobile-dock-btn" onclick="mobileShowTab('action')"><span class="dock-icon">☝️</span>操作</button>
+  <button type="button" id="dockHand" class="mobile-dock-btn" onclick="mobileShowTab('hand')"><span class="dock-icon">🃏</span>手札</button>
+  <button type="button" id="dockItem" class="mobile-dock-btn" onclick="mobileShowTab('item')"><span class="dock-icon">🎒</span>アイテム</button>
+  <button type="button" id="dockLog" class="mobile-dock-btn" onclick="mobileShowTab('log')"><span class="dock-icon">📜</span>履歴</button>
 </div>
 <div class="mobile-orientation-hint">📱 横画面もおすすめ</div>
 
@@ -1711,17 +1785,54 @@ function isMobileLayout(){
   return window.matchMedia && window.matchMedia("(max-width:900px)").matches;
 }
 
-function mobileJumpBoard(){
-  playSe("ui",0.55);
-  const panel=document.getElementById("boardPanel");
-  if(panel)panel.scrollIntoView({behavior:"smooth",block:"start"});
+let mobileBoardWidth=900;
+let mobileBoardFit=false;
+let mobileActiveTab="board";
+
+function mobileApplyBoardSize(){
+  const board=document.getElementById("board");
+  const label=document.getElementById("mobileZoomLabel");
+  if(!board)return;
+  board.style.setProperty("--mobile-board-width",`${mobileBoardWidth}px`);
+  board.classList.toggle("mobile-fit",mobileBoardFit);
+  if(label)label.textContent=mobileBoardFit?"全体":`${Math.round(mobileBoardWidth/9)}%`;
+}
+function mobileBoardZoom(dir){
+  if(!isMobileLayout())return;
+  mobileBoardFit=false;
+  mobileBoardWidth=Math.max(720,Math.min(1440,mobileBoardWidth+(dir>0?180:-180)));
+  mobileApplyBoardSize();
+  requestAnimationFrame(()=>focusBearOnMobile("auto"));
+}
+function mobileToggleFit(){
+  if(!isMobileLayout())return;
+  mobileBoardFit=!mobileBoardFit;
+  mobileApplyBoardSize();
+  if(!mobileBoardFit)requestAnimationFrame(()=>focusBearOnMobile("auto"));
+}
+function mobileFocusBear(){
+  if(!isMobileLayout())return;
+  if(mobileBoardFit){mobileBoardFit=false;mobileApplyBoardSize();}
+  focusBearOnMobile("smooth");
+}
+function mobileShowTab(tab){
+  if(!isMobileLayout())return;
+  mobileActiveTab=tab;
+  const sidebar=document.getElementById("sidebarPanel");
+  const titles={action:"操作",hand:"手札",item:"アイテム",log:"履歴"};
+  if(sidebar){
+    sidebar.classList.remove("mobile-open","mobile-tab-action","mobile-tab-hand","mobile-tab-item","mobile-tab-log");
+    if(tab!=="board"){sidebar.classList.add("mobile-open",`mobile-tab-${tab}`);}
+  }
+  const title=document.getElementById("mobileSidebarTitle"); if(title&&titles[tab])title.textContent=titles[tab];
+  [["dockBoard","board"],["dockAction","action"],["dockHand","hand"],["dockItem","item"],["dockLog","log"]].forEach(([id,key])=>{
+    const el=document.getElementById(id);if(el)el.classList.toggle("primary",key===tab);
+  });
+  if(tab==="board")requestAnimationFrame(()=>focusBearOnMobile("auto"));
 }
 
-function mobileJumpAction(){
-  playSe("ui",0.55);
-  const panel=document.getElementById("sidebarPanel");
-  if(panel)panel.scrollIntoView({behavior:"smooth",block:"start"});
-}
+function mobileJumpBoard(){ playSe("ui",0.55); mobileShowTab("board"); }
+function mobileJumpAction(){ playSe("ui",0.55); mobileShowTab("action"); }
 
 function renderMobileHud(){
   const hp=document.getElementById("mobileHp");
@@ -1756,9 +1867,12 @@ function focusBearOnMobile(behavior="smooth"){
 
 function mobilePrepareGameView(){
   if(!isMobileLayout())return;
+  mobileBoardFit=false;
+  mobileBoardWidth=900;
+  mobileApplyBoardSize();
   requestAnimationFrame(()=>{
-    mobileJumpBoard();
-    setTimeout(()=>focusBearOnMobile("auto"),80);
+    mobileShowTab("board");
+    setTimeout(()=>focusBearOnMobile("auto"),100);
   });
 }
 
