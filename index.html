@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SUPER BEAR Web Pre v1.24</title>
+<title>SUPER BEAR Web Pre v1.25</title>
 <style>
 :root {
   --bg:#151a22; --panel:#222a36; --panel2:#2a3442; --text:#eef3f7;
@@ -1107,6 +1107,51 @@ button:disabled { opacity:.38; cursor:not-allowed; filter:none!important; }
   .bear-hearts{font-size:8px;padding:1px 2px;}
 }
 
+
+/* ===== v1.25 effects-board + Bear alignment fix ===== */
+.board.effects-only .effect{
+  display:flex!important;
+  position:absolute;
+  inset:8px 2px 2px 2px;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:0 2px;
+  color:#fff!important;
+  font-weight:900;
+  pointer-events:none;
+}
+.board.effects-only .cell.blocked .effect{display:none!important;}
+.bear-status{
+  position:absolute!important;
+  inset:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  z-index:10!important;
+  pointer-events:none;
+}
+.bear-status .bear{
+  position:relative!important;
+  inset:auto!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:auto!important;
+  height:auto!important;
+  z-index:10!important;
+}
+.bear-hearts{
+  left:50%!important;
+  top:2px!important;
+  bottom:auto!important;
+  transform:translateX(-50%)!important;
+  z-index:11!important;
+}
+@media(max-width:900px){
+  .bear-hearts{top:1px!important;font-size:7px!important;}
+}
+
 </style>
 <meta name="theme-color" content="#222a36">
 <meta name="theme-color" content="#222a36">
@@ -1235,7 +1280,7 @@ button:disabled { opacity:.38; cursor:not-allowed; filter:none!important; }
 <div id="app">
   <div class="header">
     <div>
-      <div class="title">🐻 SUPER BEAR <span style="font-size:13px;color:#f2c84b">Web Pre v1.24</span></div>
+      <div class="title">🐻 SUPER BEAR <span style="font-size:13px;color:#f2c84b">Web Pre v1.25</span></div>
       <div class="subtitle">URL配布用プレ版 / PC・スマホ・タブレット対応</div>
     </div>
     <div class="stats">
